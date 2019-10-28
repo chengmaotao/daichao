@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+    <description>Spring DataSource configuration</description>
+
+
+    <!-- default datasource -->
+    <bean id="harborMasterDs" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driver_class_name}"/>
+        <property name="jdbcUrl" value="${jdbc.courier.url}"/>
+        <property name="username" value="${jdbc.courier.user}"/>
+        <property name="password" value="${jdbc.courier.password}"/>
+        <property name="maximumPoolSize" value="${jdbc.courier.max_pool_size}"/>
+    </bean>
+
+
+    <!-- transaction manager -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="harborMasterDs"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- mybatis factory -->
+    <bean id="harborSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="harborMasterDs"/>
+        <property name="configLocation" value="classpath:mybatis.xml"/>
+        <property name="mapperLocations" value="classpath*:mapper/**/*.xml"/>
+    </bean>
+
+    <!-- scan mappers under the dao dir -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="harborSqlSessionFactory"/>
+        <property name="basePackage" value="com.weshare.snow.mapper"/>
+    </bean>
+
+</beans>
