@@ -327,7 +327,7 @@ public class CtcAdvet {
 
     public String getVoAdvetUrl() {
         //return voAdvetUrl;
-        return new StringBuffer("").append("http://daichao.dajiabuy.cn").append("/data/web/upload/daichao/").append(advetUrl).toString();
+        return new StringBuffer("").append("http://39.96.91.144:8580").append("/data/web/upload/daichao/").append(advetUrl).toString();
     }
 
     public void setVoAdvetUrl(String voAdvetUrl) {

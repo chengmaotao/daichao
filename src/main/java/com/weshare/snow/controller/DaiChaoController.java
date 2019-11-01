@@ -52,6 +52,7 @@ public class DaiChaoController {
 
         try {
             daiChaoService.checkImgCode(req);
+            logger.info("check img code sucess");
 
             String verifyCode = String.valueOf((int) (Math.random() * 9000 + 1000));
             daiChaoService.smsCode(req.getMobile(), req.getChannel(), verifyCode);

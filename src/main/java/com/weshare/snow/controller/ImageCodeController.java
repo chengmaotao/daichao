@@ -4,6 +4,8 @@ import com.weshare.snow.redis.access.RedisAccess;
 import com.weshare.snow.redis.key.RedisUtils;
 import com.weshare.snow.util.ImageUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 @Controller
 @RequestMapping(value = "/ctc")
 public class ImageCodeController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ImageCodeController.class);
 
     @Autowired
     private RedisAccess redisTemplate;
@@ -44,8 +48,18 @@ public class ImageCodeController {
 
         // 图片验证码
         String code = imageUtil.getCode();
-        redisTemplate.setStringTime(RedisUtils.getImgCodeKey(mobile),code,60,TimeUnit.MINUTES);
-        //session.setAttribute("code", imageUtil.getCode());
+
+        String imgCodeKey = RedisUtils.getImgCodeKey(mobile);
+
+        logger.info("imgcode key =  {}, value = {}",imgCodeKey,code);
+
+        redisTemplate.setStringTime(imgCodeKey,code,60,TimeUnit.MINUTES);
+
+
+        String redisImgCode = (String) redisTemplate.getString(imgCodeKey);
+        logger.info("redisImgCode key =  {}, value = {}",imgCodeKey,redisImgCode);
+
+
         imageUtil.write(response.getOutputStream());
     }
 }

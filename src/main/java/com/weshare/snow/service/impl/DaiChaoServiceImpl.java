@@ -94,7 +94,13 @@ public class DaiChaoServiceImpl implements DaiChaoService {
             throw new ParameterException(ErrorCode.API_PARAM_ERROR);
         }
 
-        String redisImgCode = (String) redisTemplate.getString(RedisUtils.getImgCodeKey(req.getMobile()));
+        String imgCodeKey = RedisUtils.getImgCodeKey(req.getMobile());
+
+
+
+        String redisImgCode = (String) redisTemplate.getString(imgCodeKey);
+
+        logger.info("read imgCodeKey = {}, readimgcode = {},",imgCodeKey,redisImgCode);
 
         if (StringUtils.isEmpty(redisImgCode) || !StringUtils.equals(req.getCode().toUpperCase(), redisImgCode)) {
             logger.warn("redisImgCode = {}", redisImgCode);
@@ -102,7 +108,7 @@ public class DaiChaoServiceImpl implements DaiChaoService {
         }
 
         // 验证通过以后  清除缓存
-        redisTemplate.removeString(RedisUtils.getImgCodeKey(req.getMobile()));
+        redisTemplate.removeString(imgCodeKey);
     }
 
     /**
@@ -120,9 +126,6 @@ public class DaiChaoServiceImpl implements DaiChaoService {
             throw new ParameterException(ErrorCode.API_PARAM_ERROR);
         }
 
-        // 短信验证码
-        //String verifyCode = String.valueOf((int) (Math.random() * 9000 + 1000));
-
         // 5分钟内有效
         redisTemplate.setStringTime(RedisUtils.getSmsCodeKey(mobile, channel), verifyCode, codVaildTime, TimeUnit.MINUTES);
 
@@ -139,9 +142,10 @@ public class DaiChaoServiceImpl implements DaiChaoService {
         //封装成一个请求对象
         HttpEntity entity = new HttpEntity(requestParam, headers);
 
+        logger.info("smscode request befory entity = {}",entity);
         SmsResp responseEntity = restTemplate.postForObject(smsUrl, entity, SmsResp.class);
-
         logger.info("smsCode responseEntity = {}", responseEntity);
+
         if (responseEntity == null || SdkUtil.isEmpty(responseEntity.getData()) || responseEntity.getData().get(0).getCode() != 0) {
             logger.error("验证码发送失败");
             throw new DaiChaoException(ErrorCode.API_SMS_SEND_ERROR);

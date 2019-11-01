@@ -326,7 +326,7 @@ public class CtcPrroductCategory {
     private String voProductCategoryUrl;
 
     public String getVoProductCategoryUrl() {
-        return new StringBuffer("").append("http://daichao.dajiabuy.cn").append("/data/web/upload/daichao/").append(productCategoryUrl).toString();
+        return new StringBuffer("").append("http://39.96.91.144:8580").append("/data/web/upload/daichao/").append(productCategoryUrl).toString();
     }
 
     public void setVoProductCategoryUrl(String voProductCategoryUrl) {

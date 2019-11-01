@@ -838,7 +838,7 @@ public class CtcPrroduct {
     private String voLogo;
     public String getVoLogo() {
         // return voLogo;
-        return new StringBuffer("").append("http://daichao.dajiabuy.cn").append("/data/web/upload/daichao/").append(logo).toString();
+        return new StringBuffer("").append("http://39.96.91.144:8580").append("/data/web/upload/daichao/").append(logo).toString();
     }
 
     public void setVoLogo(String voLogo) {
